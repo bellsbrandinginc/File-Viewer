@@ -1,0 +1,518 @@
+﻿<Controls:MetroWindow
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" x:Name="MainWindow1"
+    x:Class="MainWindow"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:LW_Calculated_Fields"
+    xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+    mc:Ignorable="d"
+    BorderBrush="#ffb71111"
+    BorderThickness="1"
+    Title="DAT_FILE_Analyzer" Height="800" Width="872" Loaded="Window_Loaded" Closed="Window_Closed" ResizeMode="NoResize" Foreground="Black">
+
+    <Window.Resources>
+
+        <DataTemplate x:Key="myFirstItemTemplate">
+            <ContentPresenter Content="{Binding}" RecognizesAccessKey="False" />
+        </DataTemplate>
+
+        <ControlTemplate x:Key="ComboBoxToggleButton"  TargetType="{x:Type ToggleButton}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="25" />
+                </Grid.ColumnDefinitions>
+
+                
+                
+                <Border x:Name="Border" SnapsToDevicePixels="True" Grid.ColumnSpan="2" Background="White" BorderBrush="darkgray" BorderThickness="1"/>
+                <Border x:Name="Boredr1" SnapsToDevicePixels="True" Grid.Column="1"  Margin="1" Background="white" BorderBrush="darkgray" BorderThickness="0,0,1,0" />
+                <Path x:Name="Arrow" SnapsToDevicePixels="True" Grid.Column="1" Fill="black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 6 6 L 12 0 Z" />
+                <ContentPresenter Grid.Column="0" TextElement.Foreground="Black"></ContentPresenter>
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="ToggleButton.IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="BorderBrush" Value="Darkgray"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter TargetName="Arrow" Property="Data" Value="M 0 0 L 5 5 L 10 0"/>
+                    <Setter TargetName="Arrow" Property="Fill" Value="Black"/>
+                    <Setter TargetName="Arrow" Property="Stroke" Value="Black"/>
+                    <Setter TargetName="Arrow" Property="StrokeThickness" Value="1.5"/>
+                </Trigger>
+
+            </ControlTemplate.Triggers>
+
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="ComboBoxTextBox" TargetType="TextBox">
+            <ScrollViewer x:Name="PART_ContentHost" Focusable="False" />
+        </ControlTemplate>
+
+        <Style x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+            <Setter Property="MaxHeight" Value="30"/>
+            <Setter Property="MaxWidth" Value="200"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate  TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" Foreground="Black" Template="{StaticResource ComboBoxToggleButton}" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press">
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3,3,23,3"  VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            <TextBox OverridesDefaultStyle="True" SelectionBrush="Gray" CaretBrush="Black" Margin="0,0,30,0" TextWrapping="NoWrap"   x:Name="PART_EditableTextBox" FontFamily="Segoe UI Dark"   Foreground="Black" Style="{x:Null}" Template="{StaticResource ComboBoxTextBox}" HorizontalAlignment="Left" Focusable="True"  VerticalAlignment="Center"  FontSize="15"   Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup"  Grid.ColumnSpan="2" Placement="Bottom"  IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                <Grid Name="DropDown"   SnapsToDevicePixels="True" MaxWidth="{TemplateBinding ActualWidth}" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Grid.ColumnSpan="2" Grid.RowSpan="2" x:Name="DropDownBorder" SnapsToDevicePixels="True" Background="Transparent" MaxWidth="{TemplateBinding ActualWidth}" BorderThickness="1" BorderBrush="Black"/>
+                                    <ScrollViewer Grid.ColumnSpan="2" ScrollViewer.CanContentScroll="False" Grid.Row="1" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" Background="Transparent">
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                                <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="{x:Type GroupBox}">
+            <Setter Property="BorderBrush" Value="black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <col:ArrayList x:Key="arrList">
+            <col:DictionaryEntry Key="ASCII" Value="ASCII"/>
+            <col:DictionaryEntry Key="BigEndianUnicode" Value="BigEndianUnicod"/>
+            <col:DictionaryEntry Key="Unicode" Value="Unicode"/>
+            <col:DictionaryEntry Key="UTF8" Value="UTF8"/>
+        </col:ArrayList>
+
+    </Window.Resources>
+
+    <Grid x:Name="windowgrip" Margin="0,0,0,5">
+        
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="820" VerticalAlignment="Top" Width="867" Margin="0,0,0,-36">
+            <TabItem x:Name="AnalyzerTab" Header="Dat File Analyzer" >
+                <Grid x:Name="Dat_File_Analyzer" Margin="-15,-20,-2,25" Visibility="Visible" >
+
+                    <Controls:ProgressRing Width="30" Height="30" Margin="0,0,0,0"/>
+
+                    <Button x:Name="BT_Go" Content="Analyze" HorizontalAlignment="Left" Margin="766,296,0,0" VerticalAlignment="Top" Width="98" RenderTransformOrigin="-0.301,-0.135" Height="44" BorderBrush="#ffb71111" Background="#ffb71111" FontSize="14" />
+                    <Label x:Name="label1" Content="Output Report Location:" HorizontalAlignment="Left" Margin="37,29,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="89" Grid.Column="1"/>
+                    <TextBox x:Name="TB_Output" Margin="131,19,94,0" TextWrapping="NoWrap" VerticalAlignment="Top" RenderTransformOrigin="0.504,0.464" Height="34" MaxLines="1" Text=" " />
+                    <Button x:Name="BT_Output" Content="..." HorizontalAlignment="Left" Margin="807,29,0,0" VerticalAlignment="Top" Width="57" BorderBrush="#ffb71111" Background="#ffb71111" Height="26"/>
+
+                    <Grid Name="GridStatus"  Grid.ColumnSpan="8" Margin="37,83,35,183" HorizontalAlignment="Center"  Width="562" Grid.Column="1"   Visibility="Hidden">
+                        <Label x:Name="LB_Count" Content="" Margin="-17,222,438,-102" VerticalAlignment="Top" Height="33" HorizontalAlignment="Right" Width="141" RenderTransformOrigin="0.503,1.16"/>
+                        <ProgressBar x:Name="progressbar1" Height="18" Margin="124,228,184,-93" VerticalAlignment="Top "/>
+                    </Grid>
+
+                    <Grid Name="gvMain"  Grid.ColumnSpan="8" Margin="37,83,35,183" HorizontalAlignment="Center"  Width="800" Grid.Column="1">
+                        <ScrollViewer Margin="0,53,-27,313" CanContentScroll="False" HorizontalScrollBarVisibility="Auto"  Drop="ImagePanel_Drop" AllowDrop="true" Background="Transparent">
+                            <Grid Name="gvProducts" Grid.ColumnSpan="3" Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Name="FileName" Width="610"></ColumnDefinition>
+                                    <ColumnDefinition Name="Spacing" Width="10"></ColumnDefinition>
+                                    <ColumnDefinition Name="EncodingType" Width="142"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <Grid Margin="-10,10,10,-10">
+                        <Rectangle Fill="#ffb71111"   HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="840" Margin="38,88,0,0" />
+                        <TextBlock Text="File Name                                                                                                                                                           File Encoding" HorizontalAlignment="Left" FontSize="13" Foreground="AntiqueWhite" Width="722"  Visibility="Visible" Margin="71,98,0,650"/>
+                    </Grid>
+
+                    <RadioButton x:Name="rb_seperate" Content="Analyze each file individually" HorizontalAlignment="Left" Margin="39,68,0,0" VerticalAlignment="Top" Width="179" Background="#FFB71111" BorderBrush="#FFB71111"/>
+                    <RadioButton x:Name="rb_group" Content="Analyze all files as a group" HorizontalAlignment="Right" Margin="0,68,450,0" VerticalAlignment="Top" Width="169" BorderBrush="#FFB71111" RenderTransformOrigin="-2.651,0.444"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem x:Name="CalculateTab" Header="LW Calculated Fields">
+                <Grid x:Name="LW_Calculated_Fields"  Visibility="Visible">
+                    <Grid x:Name="optionsGrid">
+                        <Rectangle Fill="#f2f2f2"   HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="237" Margin="10,10,0,0" />
+                        <TextBlock Text="Actions To Perform" HorizontalAlignment="Center" FontWeight="Bold" FontSize="15" Foreground="Darkgray" Width="182"  Visibility="Visible" Margin="38,20,641,731"/>
+                        <Border BorderBrush="#f2f2f2" BorderThickness="4"  x:Name="optionsTable" Margin="10,44,614,-14" Visibility="Visible">
+                            <Grid  x:Name="checkboxGrid" Margin="-30,-37,-39,-130">
+                                <Label  HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" Panel.ZIndex="1" FontSize="11" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="30,32,38,841" Content="Multi-actions:"/>
+                                <CheckBox Content="Parent Date/Parent Time" HorizontalAlignment="Left" Margin="39,68,0,0" x:Name="checkBox1" VerticalAlignment="Top" Checked="CheckBox1_Changed" Unchecked="CheckBox1_Changed" />
+                                <CheckBox Content="Global Replace" HorizontalAlignment="Left" Margin="39,88,0,0" x:Name="checkBox2" VerticalAlignment="Top" Checked="CheckBox2_Changed" Unchecked="CheckBox2_Changed" />
+                                <CheckBox Content="Format Time"  HorizontalAlignment="Left" Margin="39,108,0,0" x:Name="checkBox3" VerticalAlignment="Top" Checked="CheckBox3_Changed" Unchecked="CheckBox3_Changed"  />
+                                <CheckBox Content="Email Domains" HorizontalAlignment="Left" Margin="39,128,0,337" x:Name="checkBox4" VerticalAlignment="Top" Checked="CheckBox4_Changed" Unchecked="CheckBox4_Changed" />
+                                <CheckBox Content="Duplicate Fields"  HorizontalAlignment="Left" Margin="39,148,0,315" x:Name="checkBox5"  VerticalAlignment="Top" Checked="CheckBox5_Changed" Unchecked="CheckBox5_Changed" />
+                                <CheckBox Content="Custom Fields"  HorizontalAlignment="Left" Margin="39,168,0,294" x:Name="checkBox6" VerticalAlignment="Top" Checked="CheckBox6_Changed" Unchecked="CheckBox6_Changed" />
+                                <CheckBox Content="Merge Fields"  HorizontalAlignment="Left" Margin="39,188,0,274" x:Name="checkBox7" VerticalAlignment="Top" Checked="CheckBox7_Changed" Unchecked="CheckBox7_Changed" />
+                                <CheckBox Content="Calculate Page Count"  HorizontalAlignment="Left" Margin="39,208,0,274" x:Name="checkBox8" VerticalAlignment="Top" Checked="CheckBox8_Changed" Unchecked="CheckBox8_Changed" />
+                                <Label HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" Panel.ZIndex="1" FontSize="11" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="30,237,38,641" Content="Single-action:"/>
+
+                                <CheckBox Content="Split Date and Time"  HorizontalAlignment="Left" Margin="39,268,0,228" x:Name="checkBox9" VerticalAlignment="Top" Checked="CheckBox9_Changed" Unchecked="CheckBox9_Changed" />
+                                <CheckBox Content="Reshuffle Columns"  HorizontalAlignment="Left" Margin="39,288,0,228" x:Name="checkBox10" VerticalAlignment="Top" Checked="CheckBox10_Changed" Unchecked="CheckBox10_Changed" />
+                                <CheckBox Content="Parent ID / Child IDs"  HorizontalAlignment="Left" Margin="39,308,0,250" x:Name="checkBox11" VerticalAlignment="Top" Checked="CheckBox11_Changed" Unchecked="CheckBox11_Changed" />
+                                <Button x:Name="CalculateFieldsButton" Content="Process" Background="#ffb71111 " BorderBrush="#ffb71111"  VerticalAlignment="Top" Click="Process" Visibility="Visible" Height="44" Margin="39,349,47,0"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <Grid x:Name="relationshipsGrid" Margin="265,10,10,675">
+                        <Rectangle Fill="#f2f2f2"   HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="586" />
+                        <TextBlock Text="Relationship Fields" HorizontalAlignment="Center" FontWeight="Bold" FontSize="15" Foreground="Darkgray" Width="182"  Visibility="Visible" Margin="198,10,206,55"/>
+                        <Button x:Name="LWTemplateButton" Content="Apply LW Template" Background="#ffb71111 " FontSize="11" BorderBrush="#ffb71111"  VerticalAlignment="Top" Click="ApplyTemplate" Visibility="Visible" Height="41" Margin="444,46,10,0" />
+
+                        <Border BorderBrush="#f2f2f2" BorderThickness="4"   Margin="0,1,-3,-9" Visibility="Visible" RenderTransformOrigin="0.5,0.5">
+                            <StackPanel Orientation="Horizontal" Margin="6,29,6,-4">
+                                <StackPanel.Resources>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Setter Property="Margin" Value="10,0,0,0"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Grid  x:Name="stackGrid" Width="563" >
+                                    <Label Margin="0,19,489,23" Foreground="darkgray" Content="LW__DOCID :"/>
+                                    <ComboBox x:Name="globalBegDoc" Margin="79,19,369,14" Text="" IsEditable="True" IsReadOnly="True"/>
+                                    <Label Margin="210,19,279,10"  Foreground="darkgray" Content="BegAttach :" />
+                                    <ComboBox x:Name="globalBegAttach" Margin="284,19,155,14" Text="" IsEditable="True" IsReadOnly="True" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Grid x:Name="expanderGrid" Margin="265,120,10,41">
+                        <ScrollViewer  x:Name="ScrollViewer1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" CanContentScroll="True" Margin="0,0,-9,0" Height="600" VerticalAlignment="Bottom">
+                            <StackPanel HorizontalAlignment="Left"  VerticalAlignment="Top" Background="white"   Width="255"  >
+
+                                <Expander  x:Name="pdExpander" Panel.ZIndex="2" FlowDirection="LeftToRight" Visibility="Collapsed" Background="White">
+                                    <Expander.Header>
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Parent Date/Parent Time"/>
+                                    </Expander.Header>
+                                    <Grid x:Name="parentDateGrid"  Height="375" >
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="147*"/>
+                                            <ColumnDefinition Width="440*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Grid.ColumnSpan="2" Margin="302,19,-40.5,66" Grid.RowSpan="5">
+                                            <Rectangle Margin="50,10,0,248"  Fill="#ffb71111"   HorizontalAlignment="Left" Width="231"/>
+                                            <TextBlock Foreground="White" FontSize="15" Margin="104,17,80,248">Instructions:</TextBlock>
+                                            <Border BorderBrush="#ffb71111" BorderThickness="3" Margin="50,10,49.5,83">
+                                                <TextBlock Name="tbText" Grid.Row="1" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=ActualWidth}" TextWrapping="Wrap" Foreground="Black" FontSize="15" Margin="7,38,7,7">
+                                                    Zan will provide the instructions for this section in the program pending.
+                                                </TextBlock>
+                                            </Border>
+                                        </Grid>
+
+                                        <StackPanel Orientation="Vertical" Grid.RowSpan="5" Margin="0,-10,397,10" x:Name="pdLeftCombo" >
+                                            <StackPanel.Resources>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <ComboBox x:Name="pdSentDate"     Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdReceivedDate" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdLastModDate"  Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True" />
+                                            <ComboBox x:Name="pdCreateDate"   Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0"  Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAccessDate"   Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+
+                                            <ComboBox x:Name="pdAddMore1"  Visibility="Visible" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore1b" Visibility="Visible" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore1c" Visibility="Visible" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore1d" Visibility="Visible" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore1e" Visibility="Visible" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Vertical" Grid.RowSpan="5" Margin="179,-10,241,10" x:Name="pdRightCombo">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <ComboBox x:Name="pdSentTime"     Grid.Row="0" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdReceivedTime" Grid.Row="1" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdLastModTime"  Grid.Row="2" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdCreateTime"   Grid.Row="3" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAccessTime"   Grid.Row="4" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+
+                                            <ComboBox x:Name="pdAddMore2"  Visibility="Visible" Grid.Row="0" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore2b" Visibility="Visible" Grid.Row="1" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore2c" Visibility="Visible" Grid.Row="2" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore2d" Visibility="Visible" Grid.Row="3" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox x:Name="pdAddMore2e" Visibility="Visible" Grid.Row="4" Grid.Column="1" Width="150" Margin="0,15,0,0" Text="" IsEditable="True" IsReadOnly="True"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="grExpander" FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Global Replace"/>
+                                    </Expander.Header>
+                                    <Grid  x:Name="globalReplaceGrid">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="ftExpander" FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Format Time"/>
+                                    </Expander.Header>
+                                    <Grid  x:Name="formatTimeGrid">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="edExpander"  FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White" >
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Email Domains"/>
+                                    </Expander.Header>
+                                    <Grid x:Name="edGrid" Height="110">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="77*"/>
+                                            <RowDefinition Height="23*"/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Orientation="Horizontal" Margin="10,-4,139,53" Grid.RowSpan="1">
+                                            <RadioButton x:Name="rb_thirdparty" Content="3rd Party Data" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="132" Background="#FFB71111" Foreground="darkgray" FontSize="15" BorderBrush="#FFB71111"/>
+                                            <RadioButton x:Name="rb_internaldata" Content="Internal Data" HorizontalAlignment="Right"  VerticalAlignment="Top" Width="109"  Foreground="darkgray" FontSize="15" BorderBrush="#FFB71111" RenderTransformOrigin="1.657,0.667"/>
+                                        </StackPanel>
+
+
+                                        <StackPanel Orientation="Horizontal" Margin="-4,25,4,10" Grid.RowSpan="2" >
+                                            <StackPanel.Resources>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                </Style>
+
+                                            </StackPanel.Resources>
+                                            <ComboBox x:Name="edFrom" Width="100" Text="" IsEditable="True" IsReadOnly="True" Margin="10,0,0,51"/>
+                                            <ComboBox x:Name="edTo" Width="100" Text="" IsEditable="True" IsReadOnly="True" Margin="10,0,0,51"/>
+                                            <ComboBox x:Name="edCC" Width="100" Text="" IsEditable="True" IsReadOnly="True" Margin="10,0,0,51"/>
+                                            <ComboBox x:Name="edBCC" Width="100" Text="" IsEditable="True" IsReadOnly="True" Margin="10,0,0,51"/>
+                                            <ComboBox x:Name="edSubject" Width="100" Text="" IsEditable="True" IsReadOnly="True" Margin="10,0,0,51"/>
+
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="-4,59,38,-26" Grid.RowSpan="2">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <ComboBox x:Name="edFileType" Width="209" Text="Please Select NativeFileType" IsEditable="True" IsReadOnly="True" Margin="10,0,0,51" />
+                                        </StackPanel>
+
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="dfExpander"   FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Duplicate Fields"/>
+                                    </Expander.Header>
+                                    <Grid Height="50">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="cfExpander" FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Custom Fields"/>
+                                    </Expander.Header>
+                                    <Grid Height="50">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="mfExpander"   FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Merge Fields"/>
+                                    </Expander.Header>
+                                    <Grid Height="50">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="cpcExpander"   FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Calculate Page Count"/>
+                                    </Expander.Header>
+                                    <Grid Height="50">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="sdExpander"  FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Split Date and Time"/>
+                                    </Expander.Header>
+                                    <Grid Height="125">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Orientation="Horizontal" Margin="10,10,31,22">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <ComboBox Grid.Row="0" Grid.Column="0" Width="100" Text="" IsEditable="True" IsReadOnly="True" />
+                                            <ComboBox Grid.Row="0" Grid.Column="0" Width="100" Text="" IsEditable="True" IsReadOnly="True" />
+                                            <ComboBox Grid.Row="0" Grid.Column="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"  />
+                                            <ComboBox Grid.Column="0" Grid.Row="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"  />
+                                            <ComboBox Grid.Column="0" Grid.Row="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"  />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="10,0,-10,33" Grid.Row="1" >
+                                            <StackPanel.Resources>
+                                                <Style TargetType="{x:Type ComboBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <ComboBox Grid.Row="0" Grid.Column="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox Grid.Row="0" Grid.Column="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox Grid.Row="0" Grid.Column="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox Grid.Column="0" Grid.Row="0" Width="100" Text="" IsEditable="True" IsReadOnly="True"/>
+                                            <ComboBox Grid.Column="0" Grid.Row="0" Width="100" Text="" IsEditable="True" IsReadOnly="True" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="rcExpander"  FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White" >
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Reshuffle Columns"/>
+                                    </Expander.Header>
+                                    <Grid Height="400">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="24*"/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Label Content="Available Fields" Margin="10,-5,164,364" FontSize="13" Foreground="#ffb71111" FontWeight="ExtraBlack"/>
+                                        <Border BorderBrush="#ffb71111" BorderThickness="3" Grid.Column="0" Grid.RowSpan="2" Margin="0,20,123,10" >
+                                            <Border.Resources>
+                                                <Style TargetType="{x:Type ListBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                    <Setter Property="BorderBrush" Value="White"/>
+                                                </Style>
+
+                                            </Border.Resources>
+                                            <ListBox Margin="1,0,-1,0" x:Name="Listbox1">
+                                            </ListBox>
+                                        </Border>
+
+                                        <Button Margin="200,86,43,177" Background="#f2f2f2" BorderThickness="2" BorderBrush="#ffb71111" Foreground="#ffb71111" FontSize="12" FontWeight="ExtraBlack" Height="30">
+                                            ⯈
+                                        </Button>
+                                        <Button Margin="200,132,43,131" Background="#f2f2f2" BorderThickness="2" BorderBrush="#ffb71111" Foreground="#ffb71111" FontSize="12" FontWeight="ExtraBlack" Height="30">
+                                            ⯈⯈
+                                        </Button>
+                                        <Button Margin="200,182,43,81" Background="#f2f2f2" BorderThickness="2" BorderBrush="#ffb71111" Foreground="#ffb71111" FontSize="12" FontWeight="ExtraBlack" Height="30">
+                                            ⯇
+                                        </Button>
+                                        <Button Margin="200,231,43,32" Background="#f2f2f2" BorderThickness="2" BorderBrush="#ffb71111" Foreground="#ffb71111" FontSize="12" FontWeight="ExtraBlack" Height="30">
+                                            ⯇⯇
+                                        </Button>
+
+
+                                        <Label Content="Displayed Fields" Margin="0,-5,162,268" FontSize="13" Foreground="#ffb71111" FontWeight="ExtraBlack" Grid.Column="1"/>
+                                        <Border BorderBrush="#ffb71111" BorderThickness="3" Grid.RowSpan="2" Margin="278,20,135,10" Grid.ColumnSpan="2">
+                                            <Border.Resources>
+                                                <Style TargetType="{x:Type ListBox}">
+                                                    <Setter Property="Margin" Value="10,0,0,0"/>
+                                                    <Setter Property="BorderBrush" Value="White"/>
+                                                </Style>
+                                            </Border.Resources>
+                                            <ListBox Margin="1,0,-1,0" x:Name="Listbox2" >
+                                            </ListBox>
+                                        </Border>
+
+                                        <Button  Background="#f2f2f2" BorderThickness="2" BorderBrush="#ffb71111" Foreground="#ffb71111" FontSize="12" FontWeight="ExtraBlack" Height="30" Grid.Column="1" Margin="189,178,49,176" RenderTransformOrigin="0.97,0.6">
+                                            Up
+                                        </Button>
+                                        <Button  Background="#f2f2f2" BorderThickness="2" BorderBrush="#ffb71111" Foreground="#ffb71111" FontSize="12" FontWeight="ExtraBlack" Height="30" Grid.Column="1" Margin="189,228,49,126">
+                                            Down
+                                        </Button>
+
+
+                                    </Grid>
+                                </Expander>
+
+                                <Expander x:Name="piciExpander"  FlowDirection="LeftToRight" Visibility="Collapsed"  Background="White">
+                                    <Expander.Header >
+                                        <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Panel.ZIndex="1" FontSize="15" Foreground="White" Background="{DynamicResource AccentColorBrush}" Margin="-26,-12,-64,0" Width="589" Height="40" Content="Parent ID/Child IDs"/>
+                                    </Expander.Header>
+                                    <Grid Height="50">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Grid.Row="0" Content="Field1"/>
+                                        <Label Grid.Row="1" Content="Field2" />
+                                    </Grid>
+                                </Expander>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <DatePicker HorizontalAlignment="Left" Margin="1045,125,-281,0" VerticalAlignment="Top" Width="100"/>
+    </Grid>
+</Controls:MetroWindow>
